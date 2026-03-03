@@ -1,112 +1,23 @@
 const express = require("express");
-const posts = require("../data/posts");
+const postsController = require("../controllers/postsController");
 const router = express.Router();
 
-/*
- ? Index
-*/
-router.get("/", (req, res) => {
-  const responseData = {
-    result: posts,
-    message: "Lista dei post",
-    success: true,
-  };
+//? Index
+router.get("/", postsController.index);
 
-  res.json(responseData);
-});
+//? Show
+router.get("/:id", postsController.show);
 
-/* 
- ? Show
-*/
-router.get("/:id", (req, res) => {
-  const postID = parseInt(req.params.id);
-  // FIND
-  const post = posts.find((post) => post.id === postID);
+//? Store
+router.post("/", postsController.store);
 
-  if (!post) {
-    const responseData = {
-      message: `Dettagli post ${postID} non trovati!`,
-      success: false,
-    };
-    return res.status(404).json(responseData);
-  }
+//? Update
+router.put("/:id", postsController.update);
 
-  const responseData = {
-    result: post,
-    message: `Dettagli post ${postID}`,
-    success: true,
-  };
+//? Modify
+router.patch("/:id", postsController.modify);
 
-  res.json(responseData);
-});
-
-/*
- ? Store
-*/
-/* router.post("/", (req, res) => {
-  const responseData = {
-    message: `Nuovo post creato!`,
-    success: true,
-  };
-
-  res.json(responseData)
-}); */
-
-/* 
- ? Update 
-*/
-/* router.put("/:id", (req, res) => {
-  const postID = req.params.id;
-
-  const responseData = {
-    message: `Post ${postID} interamente modificato`,
-    success: true,
-  };
-
-  res.json(responseData)
-}); */
-
-/*
- ? Modify 
-*/
-/* router.patch("/:id", (req, res) => {
-  const postID = req.params.id;
-
-  const responseData = {
-    message: `Post ${postID} parzialmente modificato`,
-    success: true,
-  };
-
-  res.json(responseData)
-}); */
-
-/*
- ? Destroy 
-*/
-router.delete("/:id", (req, res) => {
-  const postID = parseInt(req.params.id);
-
-  // FILTER
-  /* const post = posts.filter((post) => post.id !== postID); */
-
-  // FIND
-  const post = posts.find((post) => post.id === postID);
-
-  if (!post) {
-    const responseData = {
-      message: `Post ${postID} non trovato!`,
-      success: false,
-    };
-    return res.status(404).json(responseData);
-  }
-
-  const responseData = {
-    result: post,
-    message: `Eliminazione post ${postID}`,
-    success: true,
-  };
-
-  res.json(responseData);
-});
+//? Destroy
+router.delete("/:id", postsController.destroy);
 
 module.exports = router;
