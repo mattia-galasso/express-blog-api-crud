@@ -8,6 +8,7 @@ const postsRouter = require("./routers/posts");
 
 // Middleware
 app.use(express.static("public"));
+app.use(express.json());
 
 // Routers
 app.use("/posts", postsRouter);

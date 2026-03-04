@@ -52,34 +52,100 @@ const show = (req, res) => {
 };
 
 const store = (req, res) => {
+  const posts = [...postsData];
+  const { title, content, image, tags } = req.body;
+
+  console.log(req.body);
+
+  let maxID = 0;
+
+  posts.forEach((post) => {
+    if (post.id > maxID) maxID = post.id;
+  });
+
+  const newPostID = maxID + 1;
+
+  const newPost = {
+    id: newPostID,
+    title,
+    content,
+    image,
+    tags,
+  };
+
+  postsData.push(newPost);
+
+  console.log(newPost);
+
   const responseData = {
+    result: postsResponse(newPost),
     message: `Nuovo post creato!`,
     success: true,
   };
 
-  res.json(responseData);
+  res.status(201).json(responseData);
 };
 
 const update = (req, res) => {
-  const postID = req.params.id;
+  const postID = parseInt(req.params.id);
+  const { title, content, image, tags } = req.body;
+
+  //* FIND
+  const post = postsData.find((post) => post.id === postID);
+
+  if (!post) {
+    const responseData = {
+      message: `Post ${postID} non trovati!`,
+      success: false,
+    };
+    return res.status(404).json(responseData);
+  }
+
+  post.title = title;
+  post.content = content;
+  post.image = image;
+  post.tags = tags;
+
+  console.log(post);
 
   const responseData = {
+    response: postsResponse(post),
     message: `Post ${postID} interamente modificato`,
     success: true,
   };
 
-  res.json(responseData);
+  res.status(202).json(responseData);
 };
 
 const modify = (req, res) => {
-  const postID = req.params.id;
+  const postID = parseInt(req.params.id);
+  const { title, content, image, tags } = req.body;
+
+  //* FIND
+  const post = postsData.find((post) => post.id === postID);
+
+  if (!post) {
+    const responseData = {
+      message: `Post ${postID} non trovati!`,
+      success: false,
+    };
+    return res.status(404).json(responseData);
+  }
+
+  if (title) post.title = title;
+  if (content) post.content = content;
+  if (image) post.image = image;
+  if (tags) post.tags = tags;
+
+  console.log(post);
 
   const responseData = {
+    result: postsResponse(post),
     message: `Post ${postID} parzialmente modificato`,
     success: true,
   };
 
-  res.json(responseData);
+  res.status(202).json(responseData);
 };
 
 const destroy = (req, res) => {
